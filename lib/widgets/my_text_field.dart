@@ -30,16 +30,17 @@ class MyTextField extends StatelessWidget {
           padding: EdgeInsets.only(left: 14),
           decoration: BoxDecoration(
             //color: Colors.grey,
-            border: Border.all(color: Colors.grey, width: 1.0),
+            border: Border.all(color: Colors.grey, width: 2.0),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             children: [
               Expanded(
                 child: TextFormField(
+                  controller: controller,
                   readOnly: widget == null ? false : true,
                   autofocus: false,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
                   decoration: InputDecoration(
                     hintText: hint,
                     hintStyle: TextStyle(fontSize: 20),

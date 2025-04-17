@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:task/models/task.dart';
 
 class Databasehelper {
   static Database? _db;
@@ -34,27 +35,63 @@ class Databasehelper {
   ''');
   }
 
-  Future<int> insertTask(String sql) async {
+  Future<int> insertTask(Task task) async {
     Database? mydb = await db;
-    int rep = await mydb!.rawInsert(sql);
+    int rep = await mydb!.insert(
+      "Task",
+      task.tojson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
     return rep;
   }
 
-  Future<List<Map>> getTask(String sql) async {
+  Future<List<Task>?> getAllTask() async {
     Database? mydb = await db;
-    List<Map> rep = await mydb!.rawQuery(sql);
+    final List<Map<String, dynamic>> maps = await mydb!.query("Task");
+
+    if (maps.isEmpty) {
+      return null;
+    }
+    return List.generate(maps.length, (index) => Task.fromJson(maps[index]));
+  }
+
+  Future<List<Task>> getTaskbystatus(String status) async {
+    Database? mydb = await db;
+
+    final List<Map<String, dynamic>> maps = await mydb!.query(
+      'task',
+      where: 'status = ?',
+      whereArgs: [status],
+    );
+    if (maps.isNotEmpty) {}
+    return List.generate(maps.length, (index) => Task.fromJson(maps[index]));
+  }
+
+  Future<int> updatetTask(Task task) async {
+    Database? mydb = await db;
+    int rep = await mydb!.update(
+      "Task",
+      task.tojson(),
+      where: 'id = ?',
+      whereArgs: [task.id],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
     return rep;
   }
 
-  Future<int> updatetTask(String sql) async {
+  Future<int> deleteTask(Task task) async {
     Database? mydb = await db;
-    int rep = await mydb!.rawUpdate(sql);
+    int rep = await mydb!.delete("Task", where: 'id = ?', whereArgs: [task.id]);
     return rep;
   }
 
-  Future<int> deleteTask(String sql) async {
+  Future<int> updateTaskStatus(int id, String newStatus) async {
     Database? mydb = await db;
-    int rep = await mydb!.rawDelete(sql);
-    return rep;
+    return await mydb!.update(
+      'task',
+      {'status': newStatus},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

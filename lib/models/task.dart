@@ -2,9 +2,10 @@ class Task {
   int id;
   String title; // titre
   String description; // description
-  DateTime dueDate; //date d'echeance
+  String dueDate; //date d'echeance
   String priority; //faible, moyenne, élevée
   String status; //à faire, en cours, terminé
+  bool isnotification = true;
 
   Task({
     required this.id,
@@ -15,15 +16,21 @@ class Task {
     required this.status,
   });
 
-  // Convertir un objet Task en Map<String, dynamic>
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'dueDate': dueDate,
-      'priority': priority,
-      'status': status,
-    };
-  }
+  factory Task.fromJson(Map<String, dynamic> json) => Task(
+    id: json['id'],
+    title: json['title'],
+    description: json['description'],
+    dueDate: json['dueDate'],
+    priority: json['priority'],
+    status: json['status'],
+  );
+
+  Map<String, dynamic> tojson() => {
+    'id': id,
+    'title': title,
+    'description': description,
+    'dueDate': dueDate,
+    'priority': priority,
+    'status': status,
+  };
 }
